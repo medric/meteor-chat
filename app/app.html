@@ -15,17 +15,23 @@
 
         <div class="main-content">
             <aside class="left-pane">
-                {{#if currentUser}}
-                <form class="channel-form">
-                    <input class="channel-name" placeholder="Add channel"/>
-                    <div class="add-icon">
-                        <i class="icon zmdi zmdi-plus"></i>
+                <form class="channel-search">
+                    <input class="search-input" placeholder="Search channel"/>
+                    <div class="search-icon">
+                        <i class="icon zmdi zmdi-search"></i>
                     </div>
                 </form>
-                {{/if}}
                 <div class="channels">
                     {{#each channels}}{{> ChannelItem}}{{/each}}
                 </div>
+                {{#if isAdmin}}
+                    <form class="channel-form">
+                        <input class="channel-name" placeholder="Add channel"/>
+                        <div class="add-icon">
+                            <i class="icon zmdi zmdi-plus"></i>
+                        </div>
+                    </form>
+                {{/if}}
             </aside>
             <div class="route-content">
                 {{> yield}}
@@ -52,6 +58,9 @@
         {{#markdown}}{{lastMessage.content}}{{/markdown}}
         </div>
         {{/if}}
+        {{#if isAdmin}}
+        <div class="remove-channel btn"><i class="zmdi zmdi-delete"></i>Supprimer</div>
+        {{/if}}
     </div>
 </template>
 
@@ -66,17 +75,23 @@
 
 <template name="Channel">
     <div class="channel">
+        {{#if this}}
         <div class="channel-info">
             <h1>{{name}}</h1>
         </div>
+
         <div class="messages">
+            {{#if isEmpty}}<div class="system-message error"><i class="zmdi zmdi-comment-outline"></i> No message yet</div>{{/if}}
             {{#each messages}}{{> Message}}{{/each}}
         </div>
         {{#if currentUser}}
         <form class="message-form">
-            <input class="message-input" placeholder="Type your message here"/>
+            <input class="message-input" placeholder="Type your message here (supports Markdown)"/>
             <span class="send-icon"><i class="icon zmdi zmdi-mail-send"></i></span>
         </form>
+        {{/if}}
+        {{else}}
+        <div class="system-message error"><i class="zmdi zmdi-alert-circle"></i> Unknown channel</div>
         {{/if}}
     </div>
 </template>
@@ -85,7 +100,7 @@
     <div class="message">
         <div class="message-info">
              <div class="user">{{owner.username}}</div>
-            <div class="date">{{formatDate created}}</div>
+            <div class="date" title="{{created}}">{{formatDate created}}</div>
         </div>
         <div class="content">
         {{#markdown}}{{content}}{{/markdown}}

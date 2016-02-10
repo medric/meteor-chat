@@ -49,8 +49,19 @@ displayName = function (user) {
     return '';
 };
 
+// Smart markdown
+var imgExts = ["png", "jpg", "jpeg", "bmp", "gif"];
+
 // Methods
 Meteor.methods({
+    "clearChannels": function() {
+        if(this.userId && Meteor.users.findOne(this.userId).username === "admin") {
+            return Channels.remove({});
+        } else {
+            throw new Meteor.Error("Unauthorized");
+        }
+    },
+
     "addChannel": function(name) {
         if(this.userId) {
             var id = Channels.insert({
@@ -78,6 +89,24 @@ Meteor.methods({
     "sendMessage": function(channel_id, message_content) {
         if(this.userId) {
             var owner = Meteor.users.findOne(this.userId);
+
+            // Smart markdown
+            var urlReg = /(http(s)?\:\/\/[a-z0-9\/\-_%.]+)/gi;
+            if(urlReg.test(message_content)) {
+                // File extension
+                let index = message_content.lastIndexOf(".");
+                if(index != -1) {
+                    let ext = message_content.substr(index+1);
+                    // Url type detection
+                    if(ext && imgExts.indexOf(ext.toLowerCase()) != -1) {
+                        // Image
+                        message_content = "![image](" + message_content + ")";
+                    } else {
+                        // Link
+                        message_content = "[" + message_content + "](" + message_content + ")";
+                    }
+                }
+            }
 
             var message = {
                 created: new Date(),
@@ -145,9 +174,35 @@ if(Meteor.isClient) {
         return moment(date).fromNow();
     });
 
+    Blaze.registerHelper("isAdmin", function() {
+        if(Meteor.user()) {
+            return Meteor.user().username === "admin";
+        } else {
+            return false;
+        }
+    });
+
+    var search = new ReactiveVar("");
+
+    function buildRegExp(searchText) {
+        var words = searchText.trim().split(/[ \-\:]+/);
+        var exps = _.map(words, (word) => {
+            return "(?=.*" + word + ")";
+        });
+        var fullExp = exps.join('') + ".+";
+        return new RegExp(fullExp, "i");
+    }
+
     Template.Layout.helpers({
         "channels": function() {
-            return Channels.find({}, {
+            var filter = {};
+            var searchText = search.get();
+
+            if(searchText != "") {
+                filter.name = buildRegExp(searchText);
+            }
+
+            return Channels.find(filter, {
                 sort: {
                     updated: -1
                 }
@@ -169,16 +224,22 @@ if(Meteor.isClient) {
                     Router.go("/channel/" + result);
                 }
             });
-        }
-    })
+        },
+
+        "keyup .channel-search .search-input": _.throttle(function(event) {
+            search.set(event.target.value);
+        }, 200)
+    });
 
     Template.ChannelItem.helpers({
         "newMessage": function() {
-            var profile = Meteor.user().profile;
-            if(profile && profile.channels) {
-                var data = profile.channels[this._id];
-                if (data) {
-                    return data.lastRead < this.lastMessage.created;
+            if(this.lastMessage) {
+                var profile = Meteor.user().profile;
+                if (profile && profile.channels) {
+                    var data = profile.channels[this._id];
+                    if (data) {
+                        return data.lastRead < this.lastMessage.created;
+                    }
                 }
             }
 
@@ -194,6 +255,22 @@ if(Meteor.isClient) {
         "click .channel-item": function() {
             Meteor.call("readChannel", this._id);
             Router.go("/channel/" + this._id);
+        },
+
+        "click .remove-channel": function() {
+            if(confirm("Do you really want to delete this channel and all its messages?")) {
+                Meteor.call("removeChannel", this._id, (err) => {
+                    if(err) {
+                        console.error(err);
+                    }
+                });
+            }
+        }
+    });
+
+    Template.Channel.helpers({
+        "isEmpty": function() {
+            return this.messages.length === 0;
         }
     });
 
@@ -252,7 +329,7 @@ if(Meteor.isClient) {
 
     function scrollToBottom() {
         var $list = $(".messages");
-        console.log("scrolltop is " + $list.scrollTop());
+        //console.log("scrolltop is " + $list.scrollTop());
         $list.scrollTop( $list.prop("scrollHeight"));
     }
 }

@@ -7,6 +7,8 @@
 @message-border: solid 1px #eee;
 @input-border: solid 1px #ccc;
 @left-panel-background: fade(desaturate(@accent-color, 50%), 10%);
+@btn-background: darken(@accent-color, 10%);
+@btn-color: darken(white, 5%);
 
 .ellipsis {
   text-overflow: ellipsis;
@@ -106,6 +108,7 @@ p {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  overflow: hidden;
 
   .route-content {
     flex: 100% 1 1;
@@ -118,18 +121,18 @@ p {
   align-items: stretch;
   background: @left-panel-background;
 
-  .channel-form {
+  .channel-form, .channel-search {
     margin: 12px;
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    .channel-name {
+    .channel-name, .search-input {
       flex: 100% 1 1;
       padding-right: 28px;
     }
 
-    .add-icon {
+    .add-icon, .search-icon {
       .input-icon;
     }
   }
@@ -160,14 +163,19 @@ p {
       .last-message {
         opacity: 0.5;
         width: 200px;
+        max-height: 32px;
         .ellipsis;
+
+        img {
+          max-width: 100%;
+        }
       }
     }
   }
 }
 
 .route-content {
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -177,7 +185,9 @@ p {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  flex: 100% 1 1;
+  width: 100%;
+  height: 100%;
+  flex: auto;
 
   .channel-info {
     margin: 12px;
@@ -240,6 +250,10 @@ p {
 
     .content {
       flex: 100% 1 1;
+
+      img {
+        max-width: 100%;
+      }
     }
   }
 }
@@ -259,4 +273,38 @@ p {
   .logo {
     font-size: 100pt;
   }
+}
+
+.btn {
+  display: inline-block;
+  padding: 4px 8px;
+  background: @btn-background;
+  color: @btn-color;
+  border-radius: 4px;
+  margin: 4px 4px 4px 0;
+  box-shadow: 0 3px 0 darken(@btn-background, 10%);
+  cursor: pointer;
+
+  &:hover {
+    background: lighten(@btn-background, 10%);
+    box-shadow: 0 3px 0 @btn-background;
+  }
+
+  &:active {
+    position: relative;
+    top: 3px;
+    box-shadow: none;
+    background: darken(@btn-background, 10%);
+  }
+
+  .zmdi {
+    margin-right: 6px;
+  }
+}
+
+.system-message {
+  text-align: center;
+  margin: 100px 50px;
+  font-size: 20pt;
+  opacity: 0.6;
 }
