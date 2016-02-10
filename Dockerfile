@@ -21,13 +21,14 @@ ENV MONGO_URL mongodb://mongo_instance:27017/polytalk
 EXPOSE 80
 
 # Build the app
-CMD cd ./app && meteor build . --server="/" --directory
-CMD mv ./app/build ../
-
-# set the current working directory to /app
+# set the current working directory to /build
 # so future commands in this Dockerfile are easier to write
-ADD ../build .
-WORKDIR ../build
+ADD ./app .
+RUN cd ./app && meteor build . --server="/" --directory
 
+CMD mv ./build ../
+CMD rm -rf ./app
+
+WORKDIR ./build
 CMD node main.js
 
