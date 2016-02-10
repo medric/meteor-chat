@@ -12,13 +12,12 @@ RUN curl https://install.meteor.com/ | sh
 ENV PATH $PATH:/nodejs/bin
 
 #RUN npm install
-
 ENV PORT 8080
 ENV ROOT_URL http://127.0.0.1
 ENV MONGO_URL mongodb://mongo_instance:27017/polytalk
 
 # Expose port 80
-EXPOSE 80
+EXPOSE 8080
 
 # Build the app
 # set the current working directory to /build
@@ -29,6 +28,6 @@ CMD cd ./app && meteor build . --server="/" --directory
 CMD mv ./build ../
 CMD rm -rf ./app
 
-WORKDIR ./build
+WORKDIR ./
 CMD node main.js
 
