@@ -231,19 +231,23 @@ if(Meteor.isClient) {
         }, 200)
     });
 
-    Template.ChannelItem.helpers({
-        "newMessage": function() {
-            if(this.lastMessage) {
-                var profile = Meteor.user().profile;
-                if (profile && profile.channels) {
-                    var data = profile.channels[this._id];
-                    if (data) {
-                        return data.lastRead < this.lastMessage.created;
-                    }
+    function hasChannelNewMessage(channel) {
+        if(channel.lastMessage) {
+            var profile = Meteor.user().profile;
+            if (profile && profile.channels) {
+                var data = profile.channels[channel._id];
+                if (data) {
+                    return data.lastRead < channel.lastMessage.created;
                 }
             }
+        }
 
-            return false;
+        return false;
+    }
+
+    Template.ChannelItem.helpers({
+        "newMessage": function() {
+            return hasChannelNewMessage(this);
         },
 
         "isSelected": function() {
@@ -300,6 +304,7 @@ if(Meteor.isClient) {
         }
     });
 
+    // Check for new messages
     var handle;
     Tracker.autorun(() => {
         var channel = Channels.find(Session.get("currentChannel"));
@@ -321,6 +326,10 @@ if(Meteor.isClient) {
                 if(fields.messages) {
                     Tracker.afterFlush(() => {
                         scrollToBottom();
+
+                        if(hasChannelNewMessage(Channels.findOne(id))) {
+                            console.log("NOTIFICATION");
+                        }
                     });
                 }
             }

@@ -26,7 +26,7 @@
                 </div>
                 {{#if currentUser}}
                     <form class="channel-form">
-                        <input class="channel-name" placeholder="Add channel"/>
+                        <input class="channel-name" placeholder="Add channel" required/>
                         <div class="add-icon">
                             <i class="icon zmdi zmdi-plus"></i>
                         </div>
@@ -86,7 +86,7 @@
         </div>
         {{#if currentUser}}
         <form class="message-form">
-            <input class="message-input" placeholder="Type your message here (supports Markdown)"/>
+            <input class="message-input" placeholder="Type your message here (supports Markdown)" required/>
             <span class="send-icon"><i class="icon zmdi zmdi-mail-send"></i></span>
         </form>
         {{/if}}
