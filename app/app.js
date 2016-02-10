@@ -52,6 +52,40 @@ displayName = function (user) {
 // Smart markdown
 var imgExts = ["png", "jpg", "jpeg", "bmp", "gif"];
 
+// User Profile channels data
+function initProfileChannelData(owner, channel_id) {
+    if(!owner.profile) {
+        owner.profile = {};
+    }
+
+    if(!owner.profile.channels) {
+        owner.profile.channels = {};
+    }
+
+    if(!owner.profile.channels[channel_id]) {
+        owner.profile.channels[channel_id] = {};
+    }
+}
+
+function updateProfileChannel(userId, channel_id, modifier) {
+    if(userId) {
+        var owner = Meteor.users.findOne(userId);
+        if (!owner) {
+            return;
+        }
+
+        initProfileChannelData(owner, channel_id);
+
+        modifier(owner.profile.channels[channel_id]);
+
+        Meteor.users.update(userId, {
+            $set: {
+                profile: owner.profile
+            }
+        });
+    }
+}
+
 // Methods
 Meteor.methods({
     "clearChannels": function() {
@@ -134,32 +168,15 @@ Meteor.methods({
     },
 
     "readChannel": function(channel_id) {
-        if(this.userId) {
-            var owner = Meteor.users.findOne(this.userId);
-            if(!owner) {
-                return;
-            }
+        updateProfileChannel(this.userId, channel_id, (profile) => {
+            profile.lastRead = new Date();
+        });
+    },
 
-            if(!owner.profile) {
-                owner.profile = {};
-            }
-
-            if(!owner.profile.channels) {
-                owner.profile.channels = {};
-            }
-
-            if(!owner.profile.channels[channel_id]) {
-                owner.profile.channels[channel_id] = {};
-            }
-
-            owner.profile.channels[channel_id].lastRead = new Date();
-
-            Meteor.users.update(this.userId, {
-                $set: {
-                    profile: owner.profile
-                }
-            });
-        }
+    "toggleChannelNotification": function(channel_id) {
+        updateProfileChannel(this.userId, channel_id, (profile) => {
+            profile.notificationEnabled = !profile.notificationEnabled;
+        });
     }
 });
 
@@ -326,10 +343,6 @@ if(Meteor.isClient) {
                 if(fields.messages) {
                     Tracker.afterFlush(() => {
                         scrollToBottom();
-
-                        if(hasChannelNewMessage(Channels.findOne(id))) {
-                            console.log("NOTIFICATION");
-                        }
                     });
                 }
             }
