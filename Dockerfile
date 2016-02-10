@@ -11,22 +11,16 @@ RUN curl https://install.meteor.com/ | sh
 # Add Node.js installation to PATH
 ENV PATH $PATH:/nodejs/bin
 
-#RUN npm install
-ENV PORT 8080
-ENV ROOT_URL http://127.0.0.1
-ENV MONGO_URL mongodb://mongo_instance:27017/polytalk
-
-# Expose port 80
-EXPOSE 8080
-
 # Build the app
 # set the current working directory to /build
 # so future commands in this Dockerfile are easier to write
-ADD ./app ./app
-CMD cd ./app && meteor build . --server="/" --directory
+ADD ./app /opt/polytalk/app
+WORKDIR /opt/polytalk/app
+CMD meteor build . --server="/" --directory
 
 CMD mv ./build ../
-CMD rm -rf ./app
+CMD rm -rf .
 
-CMD node ./main.js
+WORKDIR /opt/polytalk/build
+CMD node main.js
 
