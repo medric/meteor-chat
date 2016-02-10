@@ -24,7 +24,7 @@
                 <div class="channels">
                     {{#each channels}}{{> ChannelItem}}{{/each}}
                 </div>
-                {{#if isAdmin}}
+                {{#if currentUser}}
                     <form class="channel-form">
                         <input class="channel-name" placeholder="Add channel"/>
                         <div class="add-icon">
