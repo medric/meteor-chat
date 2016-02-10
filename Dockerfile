@@ -26,8 +26,8 @@ CMD mv ./app/build ../
 
 # set the current working directory to /app
 # so future commands in this Dockerfile are easier to write
-ADD ../build
+ADD ../build .
 WORKDIR ../build
 
-CMD node ../build/main.js
+CMD node main.js
 
