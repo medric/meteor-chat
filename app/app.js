@@ -35,6 +35,20 @@ Router.route("/channel/:id", function() {
     Session.set("currentChannel", this.params.id);
 });
 
+displayName = function (user) {
+    if (!user)
+        return '';
+
+    if (user.profile && user.profile.name)
+        return user.profile.name;
+    if (user.username)
+        return user.username;
+    if (user.emails && user.emails[0] && user.emails[0].address)
+        return user.emails[0].address;
+
+    return '';
+};
+
 // Methods
 Meteor.methods({
     "addChannel": function(name) {
@@ -53,6 +67,14 @@ Meteor.methods({
         }
     },
 
+    "removeChannel": function(channel_id) {
+        if(this.userId && Meteor.users.findOne(this.userId).username === "admin") {
+            return Channels.remove(channel_id);
+        } else {
+            throw new Meteor.Error("Unauthorized");
+        }
+    },
+
     "sendMessage": function(channel_id, message_content) {
         if(this.userId) {
             var owner = Meteor.users.findOne(this.userId);
@@ -62,7 +84,7 @@ Meteor.methods({
                 content: message_content,
                 owner: {
                     _id: owner._id,
-                    username: owner.username
+                    username: displayName(owner)
                 }
             };
 
@@ -125,7 +147,11 @@ if(Meteor.isClient) {
 
     Template.Layout.helpers({
         "channels": function() {
-            return Channels.find();
+            return Channels.find({}, {
+                sort: {
+                    updated: -1
+                }
+            });
         }
     });
 
@@ -133,10 +159,13 @@ if(Meteor.isClient) {
         "submit .channel-form": function(event) {
             event.preventDefault();
 
-            Meteor.call("addChannel", $(event.currentTarget).find(".channel-name").val(), (err, result) => {
+            var $input = $(event.currentTarget).find(".channel-name");
+
+            Meteor.call("addChannel", $input.val(), (err, result) => {
                 if(err) {
                     console.error(err);
                 } else {
+                    $input.val("");
                     Router.go("/channel/" + result);
                 }
             });

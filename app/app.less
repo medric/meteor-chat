@@ -6,6 +6,14 @@
 @channel-selected-color: white;
 @message-border: solid 1px #eee;
 @input-border: solid 1px #ccc;
+@left-panel-background: fade(desaturate(@accent-color, 50%), 10%);
+
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  word-break: break-all;
+}
 
 .input-icon {
   width: 0;
@@ -108,11 +116,12 @@ p {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  background: @left-panel-background;
 
   .channel-form {
     margin: 12px;
     display: flex;
-    flex-direction: center;
+    flex-direction: row;
     align-items: center;
 
     .channel-name {
@@ -127,11 +136,11 @@ p {
 
   .channels {
     flex: 100% 1 1;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .channel-item {
       padding: 6px 12px;
-      min-width: 200px;
 
       &:hover {
         background: @channel-hover-background;
@@ -144,10 +153,14 @@ p {
 
       .name {
         font-size: 12pt;
+        width: 200px;
+        .ellipsis;
       }
 
       .last-message {
         opacity: 0.5;
+        width: 200px;
+        .ellipsis;
       }
     }
   }
@@ -210,9 +223,11 @@ p {
     }
 
     .message-info {
-      width: 100px;
-      opacity: 0.75;
-      text-align: center;
+      width: 120px;
+      overflow: hidden;
+      opacity: 0.6;
+      text-align: right;
+      margin-right: 12px;
 
       .user {
         font-weight: bold;
