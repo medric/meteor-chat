@@ -21,6 +21,3 @@ CMD meteor build . --server="/" --directory
 CMD mv ./build ../
 CMD rm -rf .
 
-WORKDIR /opt/polytalk/build
-CMD node main.js
-
