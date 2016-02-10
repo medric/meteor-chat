@@ -2,7 +2,7 @@ meteor:
   build: .
   container_name: polytalk
   ports:
-   - "80:80"
+   - "8080:80"
   links:
    - mongo
 mongo:  

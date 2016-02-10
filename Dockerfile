@@ -13,7 +13,7 @@ ENV PATH $PATH:/nodejs/bin
 
 #RUN npm install
 
-ENV PORT 80
+ENV PORT 8080
 ENV ROOT_URL http://127.0.0.1
 ENV MONGO_URL mongodb://mongo_instance:27017/polytalk
 
