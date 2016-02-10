@@ -24,7 +24,7 @@ EXPOSE 80
 # set the current working directory to /build
 # so future commands in this Dockerfile are easier to write
 ADD ./app .
-RUN cd ./app && meteor build . --server="/" --directory
+CMD cd ./app && meteor build . --server="/" --directory
 
 CMD mv ./build ../
 CMD rm -rf ./app
