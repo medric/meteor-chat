@@ -1,0 +1,94 @@
+<head>
+    <title>Polytalk</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,500italic,700italic,700' rel='stylesheet' type='text/css'>
+</head>
+
+<template name="Layout">
+    <div class="wrapper">
+
+        <header>
+            <span class="title"><i class="zmdi zmdi-comments"></i> Polytalk</span>
+            {{> loginButtons}}
+        </header>
+
+        <div class="main-content">
+            <aside class="left-pane">
+                {{#if currentUser}}
+                <form class="channel-form">
+                    <input class="channel-name" placeholder="Add channel"/>
+                    <div class="add-icon">
+                        <i class="icon zmdi zmdi-plus"></i>
+                    </div>
+                </form>
+                {{/if}}
+                <div class="channels">
+                    {{#each channels}}{{> ChannelItem}}{{/each}}
+                </div>
+            </aside>
+            <div class="route-content">
+                {{> yield}}
+            </div>
+        </div>
+
+    </div>
+</template>
+
+<template name="ChannelItem">
+    <div class="channel-item" selected="{{isSelected}}">
+        <div class="name">
+            <span class="icon">
+                {{#if newMessage}}
+                    <i class="zmdi zmdi-comment-alt-text"></i>
+                {{else}}
+                    <i class="zmdi zmdi-comment-alt"></i>
+                {{/if}}
+            </span>
+            {{name}}
+        </div>
+        {{#if lastMessage}}
+        <div class="last-message">
+        {{#markdown}}{{lastMessage.content}}{{/markdown}}
+        </div>
+        {{/if}}
+    </div>
+</template>
+
+<template name="Home">
+    <div class="home">
+        <div class="logo">
+            <i class="zmdi zmdi-comments"></i>
+        </div>
+        <h1>Polytalk</h1>
+    </div>
+</template>
+
+<template name="Channel">
+    <div class="channel">
+        <div class="channel-info">
+            <h1>{{name}}</h1>
+        </div>
+        <div class="messages">
+            {{#each messages}}{{> Message}}{{/each}}
+        </div>
+        {{#if currentUser}}
+        <form class="message-form">
+            <input class="message-input" placeholder="Type your message here"/>
+            <span class="send-icon"><i class="icon zmdi zmdi-mail-send"></i></span>
+        </form>
+        {{/if}}
+    </div>
+</template>
+
+<template name="Message">
+    <div class="message">
+        <div class="message-info">
+             <div class="user">{{owner.username}}</div>
+            <div class="date">{{formatDate created}}</div>
+        </div>
+        <div class="content">
+        {{#markdown}}{{content}}{{/markdown}}
+        </div>
+    </div>
+</template>

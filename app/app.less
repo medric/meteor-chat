@@ -1,0 +1,247 @@
+@accent-color: #0ba5ff;
+@header-background: @accent-color;
+@header-color: white;
+@channel-hover-background: fade(@accent-color, 50%);
+@channel-selected-background: @accent-color;
+@channel-selected-color: white;
+@message-border: solid 1px #eee;
+@input-border: solid 1px #ccc;
+
+.input-icon {
+  width: 0;
+  position: relative;
+  z-index: 1;
+  left: -20px;
+
+  .icon {
+    font-size: 12pt;
+  }
+}
+
+* {
+  flex: auto 0 0;
+}
+
+html, body {
+  margin: 0;
+}
+
+a {
+  color: @accent-color;
+  text-decoration: none;
+}
+
+html, body, input {
+  font-family: 'Roboto', sans-serif;
+  font-size: 10pt;
+}
+
+input {
+  border: @input-border;
+  padding: 6px 12px;
+  border-radius: 2px;
+}
+
+header {
+  padding: 12px;
+  background: @header-background;
+  color: @header-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .title {
+    font-size: 1.3em;
+    flex: 100% 1 1;
+  }
+}
+
+#login-buttons {
+  .login-link-text {
+    color: @header-color;
+  }
+}
+
+#login-dropdown-list {
+  position: fixed;
+  top: 12px;
+  right: 17px;
+  left: auto;
+  bottom: auto;
+
+  .login-close-text {
+    float: right;
+  }
+}
+
+html, body, .wrapper {
+  height: 100%;
+}
+
+h1 {
+  font-weight: lighter;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.main-content {
+  flex: 100% 1 1;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  .route-content {
+    flex: 100% 1 1;
+  }
+}
+
+.left-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  .channel-form {
+    margin: 12px;
+    display: flex;
+    flex-direction: center;
+    align-items: center;
+
+    .channel-name {
+      flex: 100% 1 1;
+      padding-right: 28px;
+    }
+
+    .add-icon {
+      .input-icon;
+    }
+  }
+
+  .channels {
+    flex: 100% 1 1;
+    overflow: auto;
+
+    .channel-item {
+      padding: 6px 12px;
+      min-width: 200px;
+
+      &:hover {
+        background: @channel-hover-background;
+      }
+
+      &[selected='true'] {
+        background: @channel-selected-background;
+        color: @channel-selected-color;
+      }
+
+      .name {
+        font-size: 12pt;
+      }
+
+      .last-message {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.route-content {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.channel {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 100% 1 1;
+
+  .channel-info {
+    margin: 12px;
+
+    h1 {
+      font-size: 16pt;
+      text-align: center;
+    }
+  }
+
+  .messages {
+    flex: 100% 1 1;
+    overflow: auto;
+  }
+}
+
+.message-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 12px;
+
+  .message-input {
+    flex: 100% 1 1;
+    padding-right: 28px;
+  }
+
+  .send-icon {
+    .input-icon;
+  }
+}
+
+.messages {
+  .message {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 12px;
+    border-bottom: @message-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .message-info {
+      width: 100px;
+      opacity: 0.75;
+      text-align: center;
+
+      .user {
+        font-weight: bold;
+      }
+
+      .date {
+        font-size: 8pt;
+      }
+    }
+
+    .content {
+      flex: 100% 1 1;
+    }
+  }
+}
+
+.home {
+  flex: 100% 1 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.2;
+
+  h1 {
+    font-size: 42pt;
+  }
+
+  .logo {
+    font-size: 100pt;
+  }
+}
