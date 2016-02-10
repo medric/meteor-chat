@@ -11,8 +11,7 @@ RUN curl https://install.meteor.com/ | sh
 # Add Node.js installation to PATH
 ENV PATH $PATH:/nodejs/bin
 
-# Adds app source
-RUN npm install
+#RUN npm install
 
 ENV PORT 80
 ENV ROOT_URL http://127.0.0.1
