@@ -28,6 +28,5 @@ CMD cd ./app && meteor build . --server="/" --directory
 CMD mv ./build ../
 CMD rm -rf ./app
 
-WORKDIR ./
-CMD node main.js
+CMD node ./main.js
 
