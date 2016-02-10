@@ -1,6 +1,6 @@
 meteor:  
   build: .
-  image: polytech/polytalk
+  container_name: polytalk
   ports:
    - "80:80"
   links:
