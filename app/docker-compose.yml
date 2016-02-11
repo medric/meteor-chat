@@ -4,7 +4,7 @@ meteor:
   - mongo
   environment:
   - MONGO_URL=mongodb://mongo:27017/polytalk
-  - ROOT_URL=http://62.210.54.164/
+  - ROOT_URL=http://polytalk.fr.to/
   - VIRTUAL_HOST=meteor
 
 prerender:
