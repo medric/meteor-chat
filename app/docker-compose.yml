@@ -3,8 +3,9 @@ meteor:
   links:
   - mongo
   environment:
+  - PORT=5000
   - MONGO_URL=mongodb://mongo:27017/polytalk
-  - ROOT_URL=http://localhost
+  - ROOT_URL=http://polytalk.fr.to
   - VIRTUAL_HOST=meteor
 
 prerender:
@@ -24,6 +25,7 @@ nginx:
   - prerender
   ports:
   - "80:80"
+  - "443:443"
 
 mongo:
   image: mongo:latest
