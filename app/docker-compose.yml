@@ -13,7 +13,7 @@ prerender:
   links:
   - meteor
   environment:
-  -  VIRTUAL_HOST=prerender
+  - VIRTUAL_HOST=prerender
 
 nginx:
   build: .
