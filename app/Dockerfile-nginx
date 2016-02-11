@@ -1,4 +1,4 @@
 FROM nginx
 
 # Copy nginx conf file
-COPY  nginx.conf /etc/nginx
+COPY  nginx.conf /etc/nginxp
