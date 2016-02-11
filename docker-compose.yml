@@ -1,0 +1,11 @@
+meteor:  
+  build: .
+  container_name: polytalk
+  ports:
+   - "8080:80"
+  links:
+   - mongo
+mongo:  
+  image: mongo
+  ports:
+  - "27017:27017"
