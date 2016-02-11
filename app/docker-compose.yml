@@ -3,7 +3,6 @@ meteor:
   links:
   - mongo
   environment:
-  - PORT=5000
   - MONGO_URL=mongodb://mongo:27017/polytalk
   - ROOT_URL=http://polytalk.fr.to
   - VIRTUAL_HOST=meteor
