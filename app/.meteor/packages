@@ -25,3 +25,4 @@ accounts-google
 momentjs:moment
 markdown
 reactive-var
+meteorhacks:fast-render

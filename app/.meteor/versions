@@ -19,6 +19,7 @@ caching-compiler@1.0.1-modules.8
 caching-html-compiler@1.0.3-modules.8
 callback-hook@1.0.5-modules.8
 check@1.1.1-modules.8
+chuangbo:cookie@1.1.0
 ddp@1.2.2
 ddp-client@1.2.2-modules.8
 ddp-common@1.2.2
@@ -59,6 +60,9 @@ meteor@1.1.11-modules.8
 meteor-base@1.0.1
 meteor-env-dev@0.0.1-modules.8
 meteor-env-prod@0.0.1-modules.8
+meteorhacks:fast-render@2.11.0
+meteorhacks:inject-data@1.4.1
+meteorhacks:picker@1.0.3
 minifiers-css@1.1.8-modules.8
 minifiers-js@1.1.8-modules.8
 minimongo@1.0.11-modules.8

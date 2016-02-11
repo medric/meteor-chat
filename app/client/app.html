@@ -9,7 +9,7 @@
     <div class="wrapper">
 
         <header>
-            <span class="title"><i class="zmdi zmdi-comments"></i> Polytalk</span>
+            <span class="title"><a href="/"><i class="zmdi zmdi-comments"></i> Polytalk</a></span>
             {{> loginButtons}}
         </header>
 
@@ -22,6 +22,8 @@
                     </div>
                 </form>
                 <div class="channels">
+                    {{#each favoriteChannels}}{{> ChannelItem}}{{/each}}
+                    <div class="separator"></div>
                     {{#each channels}}{{> ChannelItem}}{{/each}}
                 </div>
                 {{#if currentUser}}
@@ -41,25 +43,55 @@
     </div>
 </template>
 
+<template name="Loading">
+    <div class="loading">
+        <div class="icon">
+            <i class="zmdi zmdi-refresh"></i>
+        </div>
+    </div>
+</template>
+
 <template name="ChannelItem">
     <div class="channel-item" selected="{{isSelected}}" new-message="{{newMessage}}">
-        <div class="name">
-            <span class="icon">
-                {{#if newMessage}}
-                    <i class="zmdi zmdi-comment-alt-text"></i>
+        <div class="channel-content">
+            <div class="name">
+                <a href="/channel/{{_id}}">
+                    <span class="icon">
+                        {{#if newMessage}}
+                            <i class="zmdi zmdi-comment-alt-text"></i>
+                        {{else}}
+                            <i class="zmdi zmdi-comment-alt"></i>
+                        {{/if}}
+                    </span>
+                    <span>{{name}}</span>
+                </a>
+            </div>
+            {{#if lastMessage}}
+                <div class="last-message">
+                    {{#markdown}}{{lastMessage.content}}{{/markdown}}
+                </div>
+            {{/if}}
+        </div>
+        {{#if currentUser}}
+        <div class="channel-actions">
+            <div class="toggle-favorite icon-btn" title="Favorite">
+                {{#if isFavorite}}
+                    <i class="zmdi zmdi-star"></i>
                 {{else}}
-                    <i class="zmdi zmdi-comment-alt"></i>
+                    <i class="zmdi zmdi-star-outline"></i>
                 {{/if}}
-            </span>
-            {{name}}
+            </div>
+            <!--<div class="toggle-notification icon-btn" title="Notifications">
+                {{#if isSubscribed}}
+                    <i class="zmdi zmdi-notifications"></i>
+                {{else}}
+                    <i class="zmdi zmdi-notifications-off"></i>
+                {{/if}}
+            </div>-->
+            {{#if isAdmin}}
+                <div class="remove-channel icon-btn" title="Delete"><i class="zmdi zmdi-delete"></i></div>
+            {{/if}}
         </div>
-        {{#if lastMessage}}
-        <div class="last-message">
-        {{#markdown}}{{lastMessage.content}}{{/markdown}}
-        </div>
-        {{/if}}
-        {{#if isAdmin}}
-        <div class="remove-channel btn"><i class="zmdi zmdi-delete"></i>Delete</div>
         {{/if}}
     </div>
 </template>

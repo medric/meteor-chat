@@ -1,11 +1,12 @@
 @accent-color: #0ba5ff;
+@text-color: black;
 @header-background: @accent-color;
 @header-color: white;
 @channel-hover-background: fade(@accent-color, 50%);
 @channel-selected-background: @accent-color;
 @channel-selected-color: white;
 @message-border: solid 1px #eee;
-@input-border: solid 1px #ccc;
+@input-border: solid 1px #ddd;
 @left-panel-background: fade(desaturate(@accent-color, 50%), 10%);
 @btn-background: darken(@accent-color, 10%);
 @btn-color: darken(white, 5%);
@@ -44,21 +45,25 @@ a {
 html, body, input {
   font-family: 'Roboto', sans-serif;
   font-size: 10pt;
+  color: @text-color;
 }
 
 input {
-  border: @input-border;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 2px;
+  border: solid 1px transparent;
 }
 
 header {
   padding: 12px;
   background: @header-background;
-  color: @header-color;
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  &, a {
+    color: @header-color;
+  }
 
   .title {
     font-size: 1.3em;
@@ -95,6 +100,44 @@ h1 {
 
 p {
   margin: 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 4px 8px;
+  background: @btn-background;
+  color: @btn-color;
+  border-radius: 4px;
+  margin: 4px 4px 4px 0;
+  box-shadow: 0 2px 0 darken(@btn-background, 10%);
+  cursor: pointer;
+  position: relative;
+  top: -1px;
+
+  &:hover {
+    background: lighten(@btn-background, 10%);
+    box-shadow: 0 2px 0 @btn-background;
+  }
+
+  &:active {
+    box-shadow: none;
+    top: 1px;
+    background: darken(@btn-background, 10%);
+  }
+
+  .zmdi {
+    margin-right: 6px;
+  }
+}
+
+.icon-btn {
+  .btn;
+  text-align: center;
+  width: 10px;
+
+  .zmdi {
+    margin-right: 0;
+  }
 }
 
 .wrapper {
@@ -144,6 +187,13 @@ p {
 
     .channel-item {
       padding: 6px 12px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      a {
+        color: @text-color;
+      }
 
       &:hover {
         background: @channel-hover-background;
@@ -164,6 +214,10 @@ p {
         }
       }
 
+      .channel-content {
+        flex: 100% 1 1;
+      }
+
       .name {
         font-size: 12pt;
         width: 200px;
@@ -179,6 +233,18 @@ p {
         img {
           max-width: 100%;
         }
+      }
+
+      .channel-actions {
+        margin-left: 6px;
+      }
+    }
+
+    .separator {
+      height: 20px;
+
+      &:first-child {
+        display: none;
       }
     }
   }
@@ -218,11 +284,12 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 12px;
+  padding: 12px;
 
   .message-input {
     flex: 100% 1 1;
     padding-right: 28px;
+    border: @input-border;
   }
 
   .send-icon {
@@ -285,36 +352,28 @@ p {
   }
 }
 
-.btn {
-  display: inline-block;
-  padding: 4px 8px;
-  background: @btn-background;
-  color: @btn-color;
-  border-radius: 4px;
-  margin: 4px 4px 4px 0;
-  box-shadow: 0 3px 0 darken(@btn-background, 10%);
-  cursor: pointer;
-
-  &:hover {
-    background: lighten(@btn-background, 10%);
-    box-shadow: 0 3px 0 @btn-background;
-  }
-
-  &:active {
-    position: relative;
-    top: 3px;
-    box-shadow: none;
-    background: darken(@btn-background, 10%);
-  }
-
-  .zmdi {
-    margin-right: 6px;
-  }
-}
-
 .system-message {
   text-align: center;
   margin: 100px 50px;
   font-size: 20pt;
   opacity: 0.6;
+}
+
+.loading {
+  .system-message;
+  color: @accent-color;
+
+  @keyframes loadingAnimation {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+  }
+
+  .icon {
+    animation: loadingAnimation 1s linear infinite;
+
+    .zmdi {
+      position: relative;
+      top: 1px;
+    }
+  }
 }
