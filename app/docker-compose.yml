@@ -1,0 +1,31 @@
+meteor:
+  build: .
+  links:
+  - mongo
+  environment:
+  - MONGO_URL=mongodb://mongo:27017/polytalk
+  - ROOT_URL=http://polytalk.fr.to/
+  - VIRTUAL_HOST=meteor
+
+prerender:
+  image: cerisier/prerender
+  restart: always #auto start prerender after reboot.
+  links:
+  - meteor
+  environment:
+  - VIRTUAL_HOST=prerender
+
+nginx:
+  build: .
+  dockerfile: Dockerfile-nginx
+  container_name: nginx
+  links:
+  - meteor
+  - prerender
+  ports:
+  - "80:80"
+
+mongo:
+  image: mongo:latest
+
+
