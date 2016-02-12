@@ -27,5 +27,13 @@ nginx:
 
 mongo:
   image: mongo:latest
+  volumes_from:
+      - mongodata
+
+mongodata:
+  image: mongo:latest
+  volumes:
+  - /data/db
+  command: --break-mongo
 
 
