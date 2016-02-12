@@ -149,8 +149,8 @@ Template.ChannelItem.events({
 Template.Channel.helpers({
     "isEmpty": function() {
         return Messages.find({
-                channel_id: this._id
-            }).count() === 0;
+            channel_id: this._id
+        }).count() === 0;
     },
 
     "messages": function() {
@@ -158,7 +158,7 @@ Template.Channel.helpers({
             channel_id: this._id
         }, {
             sort: {
-                created: -1
+                created: 1
             }
         });
     }
@@ -187,6 +187,54 @@ Template.Channel.events({
 
     "click .channel": function(event) {
         Meteor.call("readChannel", this._id);
+    }
+});
+
+var editingDep = new Tracker.Dependency();
+
+Template.Message.helpers({
+    "showContent": function() {
+        return !this.hidden || this.owner._id === Meteor.userId() || Meteor.user().username === "admin";
+    },
+    "canEdit": function() {
+        return this.owner._id === Meteor.userId() || Meteor.user().username === "admin";
+    },
+    "editing": function() {
+        editingDep.depend();
+        return this.editing;
+    }
+});
+
+Template.Message.events({
+    "click .edit-message": function(event, template) {
+        this.editing = true;
+        editingDep.changed();
+
+        var textarea = template.$('.message-input');
+        console.log(textarea);
+        textarea.val(this.content);
+    },
+    "click .cancel-edition": function() {
+        delete this.editing;
+        editingDep.changed();
+    },
+    "click .save-message": function(event, template) {
+        delete this.editing;
+        editingDep.changed();
+
+        var textarea = template.$('.message-input');
+        Meteor.call("editMessage", this._id, textarea.val());
+    },
+    "click .show-message": function() {
+        Meteor.call("setMessageVisibility", this._id, true);
+    },
+    "click .hide-message": function() {
+        Meteor.call("setMessageVisibility", this._id, false);
+    },
+    "click .remove-message": function() {
+        if(confirm("Do you really want to delete this message?")) {
+            Meteor.call("removeMessage", this._id);
+        }
     }
 });
 

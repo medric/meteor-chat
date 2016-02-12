@@ -133,7 +133,7 @@ p {
 .icon-btn {
   .btn;
   text-align: center;
-  width: 10px;
+  width: 12px;
 
   .zmdi {
     margin-right: 0;
@@ -199,7 +199,7 @@ p {
         background: @channel-hover-background;
       }
 
-      &[selected='true'] {
+      &[data-selected='true'] {
         background: @channel-selected-background;
         color: @channel-selected-color;
 
@@ -208,7 +208,7 @@ p {
         }
       }
 
-      &[new-message='true'] {
+      &[data-new-message='true'] {
         .name {
           font-weight: bold;
         }
@@ -309,6 +309,26 @@ p {
       border-bottom: none;
     }
 
+    &:hover {
+      background: fade(desaturate(@accent-color, 30%), 5%);
+    }
+
+    &[data-hidden='true'] {
+      .message-info, .content {
+        opacity: 0.3;
+      }
+    }
+
+    .message-edition {
+      display: none;
+    }
+
+    &[data-editing='true'] {
+      .message-edition {
+        display: block;
+      }
+    }
+
     .message-info {
       width: 120px;
       overflow: hidden;
@@ -328,8 +348,17 @@ p {
     .content {
       flex: 100% 1 1;
 
+      p, .updated {
+        display: inline-block;
+      }
+
       img {
         max-width: 100%;
+      }
+
+      .updated {
+        opacity: 0.5;
+        margin-left: 4px;
       }
     }
   }

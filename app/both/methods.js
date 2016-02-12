@@ -20,6 +20,48 @@ function updateProfileChannel(userId, channel_id, modifier) {
     }
 }
 
+function updateChannelLastMessage(message) {
+    var channel = Channels.findOne(message.channel_id);
+    if(channel && channel.lastMessage && channel.lastMessage._id === message._id) {
+        Channels.update(channel._id, {
+            $set: {
+                lastMessage: message
+            }
+        });
+    }
+}
+
+function processMessageContent(message_content) {
+    var matches;
+
+    // Smart markdown
+    var urlReg = /(http(s)?\:\/\/[a-z0-9\/\-_%.]+)/gi;
+    if(urlReg.test(message_content)) {
+        // File extension
+        let index = message_content.lastIndexOf(".");
+        if(index != -1) {
+            let ext = message_content.substr(index+1);
+            // Url type detection
+            if(ext && imgExts.indexOf(ext.toLowerCase()) != -1) {
+                // Image
+                message_content = "![image](" + message_content + ")";
+            } else {
+                // Link
+                message_content = "[" + message_content + "](" + message_content + ")";
+            }
+        }
+    }
+
+    // Icons
+    var iconReg = /§([a-z-]+)$/i;
+    matches = message_content.match(iconReg);
+    _.each(matches, (match) => {
+
+    });
+
+    return message_content;
+}
+
 // Methods
 Meteor.methods({
     "clearChannels": function() {
@@ -63,23 +105,7 @@ Meteor.methods({
         if(this.userId) {
             var owner = Meteor.users.findOne(this.userId);
 
-            // Smart markdown
-            var urlReg = /(http(s)?\:\/\/[a-z0-9\/\-_%.]+)/gi;
-            if(urlReg.test(message_content)) {
-                // File extension
-                let index = message_content.lastIndexOf(".");
-                if(index != -1) {
-                    let ext = message_content.substr(index+1);
-                    // Url type detection
-                    if(ext && imgExts.indexOf(ext.toLowerCase()) != -1) {
-                        // Image
-                        message_content = "![image](" + message_content + ")";
-                    } else {
-                        // Link
-                        message_content = "[" + message_content + "](" + message_content + ")";
-                    }
-                }
-            }
+            message_content = processMessageContent(message_content);
 
             var message = {
                 channel_id: channel_id,
@@ -91,7 +117,8 @@ Meteor.methods({
                 }
             };
 
-            Messages.insert(message);
+            var id = Messages.insert(message);
+            message._id = id;
 
             Channels.update(channel_id, {
                 $set: {
@@ -104,6 +131,80 @@ Meteor.methods({
         } else {
             throw new Meteor.Error("Unauthorized");
         }
+    },
+
+    "editMessage": function(message_id, message_content) {
+        console.log(message_content);
+        if(this.userId) {
+            var user = Meteor.users.findOne(this.userId);
+            var message = Messages.findOne(message_id);
+            if(message && (user.username === "admin" || message.owner._id === this.userId)) {
+
+                message_content = processMessageContent(message_content);
+
+                message.content = message_content;
+                message.updated = new Date();
+
+                Messages.update(message_id, {
+                    $set: {
+                        content: message.content,
+                        updated: message.updated
+                    }
+                });
+
+                updateChannelLastMessage(message);
+
+                return;
+            }
+        }
+
+        throw new Meteor.Error("Unauthorized");
+    },
+
+    "setMessageVisibility": function(message_id, visible) {
+        if(this.userId) {
+            var user = Meteor.users.findOne(this.userId);
+            var message = Messages.findOne(message_id);
+            if(message && (user.username === "admin" || message.owner._id === this.userId)) {
+
+                message.hidden = !visible;
+
+                Messages.update(message_id, {
+                    $set: {
+                        hidden: message.hidden
+                    }
+                });
+
+                updateChannelLastMessage(message);
+
+                return;
+            }
+        }
+
+        throw new Meteor.Error("Unauthorized");
+    },
+
+    "removeMessage": function(message_id) {
+        if(this.userId) {
+            var user = Meteor.users.findOne(this.userId);
+            var message = Messages.findOne(message_id);
+            if(message && user.username === "admin") {
+                Messages.remove(message_id);
+
+                var channel = Channels.findOne(message.channel_id);
+                if(channel && channel.lastMessage && channel.lastMessage._id === message._id) {
+                    Channels.update(channel._id, {
+                        $unset: {
+                            lastMessage: ""
+                        }
+                    });
+                }
+
+                return;
+            }
+        }
+
+        throw new Meteor.Error("Unauthorized");
     },
 
     "readChannel": function(channel_id) {

@@ -9,6 +9,7 @@ Router.route("/", function() {
     this.render("Home");
     if(Meteor.isClient) {
         Session.set("title", "Polytalk");
+        Session.set("currentChannel", null);
     }
 }, {
     waitOn: function() {

@@ -52,7 +52,7 @@
 </template>
 
 <template name="ChannelItem">
-    <div class="channel-item" selected="{{isSelected}}" new-message="{{newMessage}}">
+    <div class="channel-item" data-selected="{{isSelected}}" data-new-message="{{newMessage}}">
         <div class="channel-content">
             <div class="name">
                 <a href="/channel/{{_id}}">
@@ -67,9 +67,15 @@
                 </a>
             </div>
             {{#if lastMessage}}
+                {{#with lastMessage}}
                 <div class="last-message">
-                    {{#markdown}}{{lastMessage.content}}{{/markdown}}
+                    {{#if hidden}}
+                        <div class="hidden-info"><i class="zmdi zmdi-eye-off"></i> Message hidden</div>
+                    {{else}}
+                        {{#markdown}}{{content}}{{/markdown}}
+                    {{/if}}
                 </div>
+                {{/with}}
             {{/if}}
         </div>
         {{#if currentUser}}
@@ -118,7 +124,7 @@
         </div>
         {{#if currentUser}}
         <form class="message-form">
-            <input class="message-input" placeholder="Type your message here (supports Markdown)" required/>
+            <input class="message-input" placeholder="Type your message here (supports Markdown)" required autocomplete="off"/>
             <span class="send-icon"><i class="icon zmdi zmdi-mail-send"></i></span>
         </form>
         {{/if}}
@@ -129,13 +135,46 @@
 </template>
 
 <template name="Message">
-    <div class="message">
+    <div class="message" data-hidden="{{hidden}}" data-editing="{{editing}}">
         <div class="message-info">
-             <div class="user">{{owner.username}}</div>
+            <div class="user">{{owner.username}}</div>
+            {{#if showContent}}
             <div class="date" title="{{created}}">{{formatDate created}}</div>
+            {{/if}}
         </div>
         <div class="content">
-        {{#markdown}}{{content}}{{/markdown}}
+            <div class="message-edition">
+                <textarea class="message-input"></textarea>
+                <div class="actions">
+                    <div class="save-message btn"><i class="zmdi zmdi-floppy"></i> Save</div>
+                    <div class="cancel-edition btn"><i class="zmdi zmdi-close"></i> Cancel</div>
+                </div>
+            </div>
+            {{#unless editing}}
+                {{#if showContent}}
+                    {{#markdown}}{{content}}{{/markdown}}
+                    {{#if updated}}
+                        <div class="updated" title="Updated {{formatDate updated}}"><i class="zmdi zmdi-edit"></i></div>
+                    {{/if}}
+                {{/if}}
+                {{#if hidden}}
+                    <div class="hidden-info"><i class="zmdi zmdi-eye-off"></i> Message hidden</div>
+                {{/if}}
+            {{/unless}}
+        </div>
+
+        <div class="message-actions">
+            {{#if canEdit}}
+                <div class="edit-message icon-btn" title="Edit"><i class="zmdi zmdi-edit"></i></div>
+                {{#if hidden}}
+                <div class="show-message icon-btn" title="Show"><i class="zmdi zmdi-eye"></i></div>
+                {{else}}
+                <div class="hide-message icon-btn" title="Hide"><i class="zmdi zmdi-eye-off"></i></div>
+                {{/if}}
+            {{/if}}
+            {{#if isAdmin}}
+                <div class="remove-message icon-btn" title="Delete"><i class="zmdi zmdi-delete"></i></div>
+            {{/if}}
         </div>
     </div>
 </template>
