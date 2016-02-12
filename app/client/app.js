@@ -241,7 +241,9 @@ Template.Message.events({
 // Check for new messages
 var handle;
 Tracker.autorun(() => {
-    var channel = Channels.find(Session.get("currentChannel"));
+    var channel = Messages.find({
+        channel_id: Session.get("currentChannel")
+    });
     if(!channel) {
         return;
     }

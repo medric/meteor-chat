@@ -34,15 +34,19 @@ function updateChannelLastMessage(message) {
 function processMessageContent(message_content) {
     var matches;
 
+    // Youtube
+    var ytReg = /http(s)?:\/\/(www\.)?youtube\.com\/watch\?v=([a-z0-9]+).*/gi;
+    message_content = message_content.replace(ytReg, '<iframe width="560" height="315" src="https://www.youtube.com/embed/$3" frameborder="0" allowfullscreen></iframe>');
+
     // Smart markdown
-    var urlReg = /(http(s)?\:\/\/[a-z0-9\/\-_%.]+)/gi;
+    var urlReg = /^(http(s)?\:\/\/[a-z0-9\/\-_%.]+)$/gi;
     if(urlReg.test(message_content)) {
         // File extension
         let index = message_content.lastIndexOf(".");
-        if(index != -1) {
-            let ext = message_content.substr(index+1);
+        if (index != -1) {
+            let ext = message_content.substr(index + 1);
             // Url type detection
-            if(ext && imgExts.indexOf(ext.toLowerCase()) != -1) {
+            if (ext && imgExts.indexOf(ext.toLowerCase()) != -1) {
                 // Image
                 message_content = "![image](" + message_content + ")";
             } else {
@@ -53,11 +57,8 @@ function processMessageContent(message_content) {
     }
 
     // Icons
-    var iconReg = /§([a-z-]+)$/i;
-    matches = message_content.match(iconReg);
-    _.each(matches, (match) => {
-
-    });
+    var iconReg = /§([a-z-]+)§/gi;
+    message_content = message_content.replace(iconReg, '<i class="zmdi zmdi-$1"></i>');
 
     return message_content;
 }
