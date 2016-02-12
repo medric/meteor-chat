@@ -35,7 +35,7 @@ function processMessageContent(message_content) {
     var matches;
 
     // Youtube
-    var ytReg = /http(s)?:\/\/(www\.)?youtube\.com\/watch\?v=([a-z0-9]+).*/gi;
+    var ytReg = /http(s)?:\/\/(www\.)?youtube\.com\/watch\?v=([a-z0-9-]+).*/gi;
     message_content = message_content.replace(ytReg, '<iframe width="560" height="315" src="https://www.youtube.com/embed/$3" frameborder="0" allowfullscreen></iframe>');
 
     // Smart markdown
